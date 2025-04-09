@@ -12,33 +12,78 @@ struct HomeView: View {
         GridItem(.flexible())
     ]
     
+    @StateObject var viewModel = ViewModel()
+    
     let items = Array(1...5)
     
+    private var dateFormatter: DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd/MM/yyyy HH:mm" // Formato dia, mês, ano, hora e minuto
+        return formatter
+    }
+    
     var body: some View {
+        
         ZStack(){
             Color.verdeIrriga
                 .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
             ScrollView{
                 LazyVGrid(columns: columns) {
                     Section(){
-                        ForEach(items, id: \.self) { item in
-                            VStack {
-                                Spacer()
-                                Image(systemName:"leaf.circle.fill")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 200,height: 120)
-                                    .foregroundColor(.white)
-                                    .padding(10)
-                                    .background(Color.verdeIrriga)
-                                    .cornerRadius(10)
-                                Text("Planta")
-                                    .font(.title3.bold())
-                                    .padding(-10)
-                            }
+                        ForEach(viewModel.sensores) {sensor in
+                            // Calculando a cor de fundo com base na umidade
+                            let umidadeAtual = sensor.leituras.last ?? 0
+                            let umidadeMin = sensor.umidadeMin
+                            let umidadeMax = sensor.umidadeMax
                             
-                            .padding(.horizontal)
-                            .padding(.bottom, 20)
+                            //calcular a cor de fundo com base na umidade
+                            let bgColor: Color = {
+                                if umidadeAtual < umidadeMin{
+                                    return .red
+                                } 
+                                else if umidadeAtual > umidadeMax{
+                                    return .azulIrriga
+                                }
+                                else if abs(umidadeAtual - umidadeMin) <= 8 || abs(umidadeAtual - umidadeMax) <= 8 {
+                                    return .yellow
+                                } else {
+                                    return .green
+                                }
+                            }()
+                                VStack {
+                                    Text(sensor.nome)
+                                        .bold()
+                                    
+                                    if let firstData = sensor.datas.first {
+                                        
+                                        let epochTime = TimeInterval(firstData) / 1000
+                                        let data = Date(timeIntervalSince1970: epochTime)
+
+                                        Text("ultima leitura: " + dateFormatter.string(from: data))
+                                            .font(.caption)
+                                            .bold()
+                                    } else {
+                                        //caso sensor.datas esteja vazio
+                                        Text("Data indisponível")
+                                            .bold()
+                                    }
+                                    
+                                    Text("\(umidadeAtual)" + "%")
+                                    if (bgColor == .red){
+                                        Image(systemName: "drop")
+                                    }
+                                    else if (bgColor == .yellow && umidadeAtual < umidadeMin){
+                                        Image(systemName: "drop.halffull")
+                                    }
+                                    else{
+                                        Image(systemName: "drop.fill")
+                                    }
+                                }
+                                .frame(width: 250, height: 100)
+                                .background(bgColor)
+                                .cornerRadius(10)
+                                .padding(.horizontal)
+                                .padding(.bottom, 20)
                         }
                     } header: {
                         Text("Minhas Plantas")
@@ -51,6 +96,9 @@ struct HomeView: View {
             }
             .background(Color.white)
             .padding(.vertical)
+        }
+        .onAppear(){
+            viewModel.fetchSensores()
         }
     }
 }
