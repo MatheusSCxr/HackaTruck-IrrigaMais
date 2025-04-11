@@ -15,13 +15,13 @@ struct SensorView: View {
             let data = sensor.datas[i]
             
             // Verifica se a data é do mesmo dia
-            if data - dataInicioDia < 86400000 { // 86400000 ms = 1 dia
+            if data - dataInicioDia < 86400 { // 86400000 ms = 1 dia
                 somaLeituras += leitura
                 contadorLeituras += 1
             } else {
                 // Calcula a média do dia anterior
                 let mediaDiaAnterior = Double(somaLeituras) / Double(contadorLeituras)
-                let diaAnterior = Date(timeIntervalSince1970: TimeInterval(dataInicioDia / 1000))
+                let diaAnterior = Date(timeIntervalSince1970: TimeInterval(dataInicioDia))
                 let formatter = DateFormatter()
                 formatter.dateFormat = "yyyy-MM-dd"
                 let diaFormatado = formatter.string(from: diaAnterior)
@@ -45,7 +45,8 @@ struct SensorView: View {
             let diaFormatado = formatter.string(from: diaFinal)
             
             mediasDiarias.append(LeituraPorDia(id: UUID(), dia: diaFormatado, media: mediaDiaFinal))
-            
+            print("dia definido")
+            print(contadorLeituras)
         }
 
         return mediasDiarias
@@ -56,10 +57,13 @@ struct SensorView: View {
         let total = leituras.count
         
         // Verifica se o array tem menos de 50 elementos, caso tenha, retorna o array inteiro
-        if total < 30 {
+        if total <= 30 {
+            print("menor igual a 30")
+            print(total)
             return Array(leituras.suffix(30))
             //Array(leituras.suffix(countToFetch))
         } else {
+            print("maior que a 30")
            return Array(leituras.suffix(30))
         }
     }
