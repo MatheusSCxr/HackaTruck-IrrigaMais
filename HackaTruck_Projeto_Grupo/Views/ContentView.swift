@@ -36,7 +36,6 @@ struct ContentView: View {
                         }
                         .fontWeight(.bold)
                 }
-                .font(.title.bold())
                 .accentColor(.azulIrriga)
             }
         }

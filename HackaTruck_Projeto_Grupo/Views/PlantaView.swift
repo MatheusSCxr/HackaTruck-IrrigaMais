@@ -8,24 +8,7 @@
 import SwiftUI
 
 struct PlantaView: View {
-    @State var planta: Planta = Planta(
-            id: 0,
-            nomePopular: "Espada-de-São-Jorge",
-            nomeCientifico: "Sansevieria trifasciata",
-            imagemURL: "https://terramagna.com.br/wp-content/uploads/2022/09/Planta-jovem-luz-solar.jpg",
-            descricao: "Planta resistente e fácil de cuidar, ideal para iniciantes.",
-            nivelCuidado: "Facil",
-            umidadeIdealMin: 30,
-            umidadeIdealMax: 50,
-            frequenciaRega: "1 vez por semana",
-            ambienteIdeal: "Interior",
-            luminosidade: "Luz Indireta",
-            tamanho: "Média",
-            temperaturaIdealMin: 15,
-            temperaturaIdealMax: 30,
-            dicas: ["Evite encharcar o solo"],
-            toxicaParaPets: true
-        )
+    @Binding var planta: Planta
     
     var body: some View {
         ZStack(){
@@ -47,8 +30,8 @@ struct PlantaView: View {
                             .padding(.leading, 20)
                     }
                     Text(planta.nomePopular ?? "<no_name>")
-                        .font(.title.bold())
-                    Text(planta.nomeCientifico ?? "<no_name>")
+                        .font(.largeTitle.bold())
+                    Text("( " + (planta.nomeCientifico ?? "<no_name>") + " )")
                         .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     Text(planta.descricao ?? "<no_description>")
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -74,31 +57,31 @@ struct PlantaView: View {
                     .padding(.horizontal, 15)
                     
                     HStack(){
-                        Text("Temperatura mínima: ")
+                        Text("Temp. mínima: ")
                         Text("\(planta.temperaturaIdealMin ?? -1)")
+                            .font(.title2)
                             .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                         Spacer()
-                        Text("Temperatura máxima: ")
+                        Text("Temp. máxima: ")
                         Text("\(planta.temperaturaIdealMax ?? -1)")
+                            .font(.title2)
                             .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
                     }
                     .padding(.vertical, 10)
                     .padding(.horizontal, 15)
                     
+                    Text("Faixa de umidade ideal:  ")
+                        .font(.title3)
+                        .padding(.vertical, 5)
+                        .padding(.horizontal, 20)
+                    Text("\(planta.umidadeIdealMin ?? -1)% - " + "\(planta.umidadeIdealMax ?? -1)%")
+                        .font(.title3)
+                        .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
+                        .padding(.vertical, 10)
+                        .padding(.horizontal, 20)
+                        
                     HStack(){
-                        Text("Umidade mínima: ")
-                        Text("\(planta.umidadeIdealMin ?? -1)")
-                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                        Spacer()
-                        Text("Umidade máxima: ")
-                        Text("\(planta.umidadeIdealMax ?? -1)")
-                            .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
-                    }
-                    .padding(.vertical, 10)
-                    .padding(.horizontal, 20)
-                    
-                    HStack(){
-                        Text("Frequência recomendada de rega")
+                        Text("Frequência de rega (dias): ")
                             .font(.title3)
                         Text("\(planta.umidadeIdealMin ?? -1)")
                             .fontWeight(/*@START_MENU_TOKEN@*/.bold/*@END_MENU_TOKEN@*/)
@@ -117,8 +100,9 @@ struct PlantaView: View {
                     
                     HStack(){
                         Text("Dicas: ")
-                            .font(.title3.bold())
+                            .font(.title3)
                         Text(planta.dicas?.joined(separator: ", ") ?? "<no_dicas>")
+                            .font(.title3.bold())
                     }
                     .padding(.vertical, 10)
                     .padding(.horizontal, 20)
@@ -129,9 +113,5 @@ struct PlantaView: View {
             .padding(.vertical)
         }
     }
-}
-
-#Preview {
-    PlantaView()
 }
 

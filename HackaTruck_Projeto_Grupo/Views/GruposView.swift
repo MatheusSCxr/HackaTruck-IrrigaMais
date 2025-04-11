@@ -54,7 +54,6 @@ struct GruposView: View {
             .background(Color.white)
             .padding(.vertical)
         }
-        
     }
 }
 

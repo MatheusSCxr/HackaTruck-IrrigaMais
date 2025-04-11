@@ -16,6 +16,28 @@ struct CatalogoView: View {
     
     @StateObject var viewModel = ViewModel()
     
+    @State private var isSheetPresented = false
+    
+    @State var planta2: Planta = Planta(
+            id: 0,
+            nomePopular: "Espada-de-São-Jorge",
+            nomeCientifico: "Sansevieria trifasciata",
+            imagemURL: "https://terramagna.com.br/wp-content/uploads/2022/09/Planta-jovem-luz-solar.jpg",
+            descricao: "Planta resistente e fácil de cuidar, ideal para iniciantes.",
+            nivelCuidado: "Facil",
+            umidadeIdealMin: 30,
+            umidadeIdealMax: 50,
+            frequenciaRega: "1 vez por semana",
+            ambienteIdeal: "Interior",
+            luminosidade: "Luz Indireta",
+            tamanho: "Média",
+            temperaturaIdealMin: 15,
+            temperaturaIdealMax: 30,
+            dicas: ["Evite encharcar o solo"],
+            toxicaParaPets: true
+        )
+    
+    
     var body: some View {
         ZStack(){
             Color.verdeIrriga
@@ -46,6 +68,13 @@ struct CatalogoView: View {
                             .frame(width: 100, height: 100)
                             .padding(.horizontal, 15)
                             .padding(.vertical, 30)
+                            .onTapGesture {
+                                isSheetPresented = true
+                                planta2 = planta
+                            }
+                            .sheet(isPresented: $isSheetPresented) {
+                                PlantaView(planta: $planta2)
+                            }
                         }
                     } header: {
                         Text("Catálogo de Plantas")
@@ -60,7 +89,7 @@ struct CatalogoView: View {
             .padding(.vertical)
         }
         .onAppear(){
-            viewModel.fetch()
+            viewModel.fetchPlantas()
         }
     }
 }
